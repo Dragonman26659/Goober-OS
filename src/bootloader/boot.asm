@@ -1,7 +1,4 @@
 org 0x7c00
-bits 16
-
-%define ENDL 0x0d, 0x0A
 
 ;
 ; FAT12 HEADERS
@@ -30,66 +27,100 @@ ebr_signature:              db 29h
 ebr_volume_id:              db 12h, 34h, 56h, 78h   ; serial number, value dosent matter
 ebr_volume_label:           db 'GOOBER OS  '        ; 11 bytes padded w spaces
 ebr_system_id:              db 'FAT12   '           ; 8bytes
-  
 
-;
-;   Code goes here
-;
 
-; Entry point
+
+
 start:
-    jmp main
+    KERNEL_LOCATION equ 0x1000
 
 
-;
-;   Print a string to the screen.
-;   Params:
-;       - ds:si points to a string
-;
-puts:
-    ; save registers we will modify
-    push si
-    push ax
+    BOOT_DISK: db 0
 
-.loop:
-    lodsb          ; loads next charater in al
-    or al, al       ; verify if next charater is null
-    jz .done
+    mov al, dl
+    mov [BOOT_DISK], al
 
-    mov ah, 0x0e
-    mov bh, 0
+    ; setting up the stack
+
+    xor ax, ax                          
+    mov es, ax
+    mov ds, ax
+    mov bp, 0x8000
+    mov sp, bp
+
+    mov bx, KERNEL_LOCATION
+
+    ; reading the disk
+
+    mov ah, 2
+    mov al, 1
+    mov ch, 0
+    mov dh, 0
+    mov cl, 2
+    mov dl, [BOOT_DISK]
+    int 0x13
+
+
+    mov ah, 0x0
+    mov al, 0x3
     int 0x10
 
-    jmp .loop
 
-.done:
-    pop ax
-    pop si
-    ret
+    CODE_SEG equ GDT_code - GDT_start
+    DATA_SEG equ GDT_data - GDT_start
+
+    cli
+    lgdt [GDT_descriptor]
+    mov eax, cr0
+    or eax, 1
+    mov cr0, eax
+    jmp CODE_SEG:start_protected_mode
+
+    jmp $
+                                    
+;   global discriptor table                   
+GDT_start:                          ; must be at the end of real mode code
+    GDT_null:
+        dd 0x0
+        dd 0x0
+
+    GDT_code:
+        dw 0xffff
+        dw 0x0
+        db 0x0
+        db 0b10011010
+        db 0b11001111
+        db 0x0
+
+    GDT_data:
+        dw 0xffff
+        dw 0x0
+        db 0x0
+        db 0b10010010
+        db 0b11001111
+        db 0x0
+
+GDT_end:
+
+GDT_descriptor:
+    dw GDT_end - GDT_start - 1
+    dd GDT_start
 
 
-
-main:
-    ; Setup data segments
-    mov ax, 0           ; cant write to ds/es directly
+[bits 32]
+start_protected_mode:
+    ; Setup stack
+    mov ax, DATA_SEG
     mov ds, ax
-    mov es, ax
-
-    ; setup stack
     mov ss, ax
-    mov sp, 0x7C00      ; Stack grows downwards from where we are located in memory
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ebp, 0x90000
+    mov esp, ebp
     
-    ; print message
-    mov si, msg_hello
-    call puts
+    jmp KERNEL_LOCATION
 
-    hlt
-
-.halt:
-    jmp .halt
-
-
-msg_hello: db 'Hello world!', ENDL, 0
 
 times 510-($-$$) db 0
 dw 0AA55h

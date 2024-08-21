@@ -1,39 +1,34 @@
-ASM=nasm
+# Define variables for paths and commands
+PATH := $(PATH):/usr/local/i386elfgcc/bin
+NASM := nasm
+CC := i386-elf-gcc
+LD := i386-elf-ld
 
-SRC_DIR=src
-BUILD_DIR=build
+# Default target
+all: build/OS.bin
 
-.PHONY: all floppy_image kernel bootloader clean always
+# Build bootloader
+build/boot.bin: src/bootloader/boot.asm
+	$(NASM) $< -f bin -o $@
 
+# Build kernel entry
+build/kernel_entry.o: src/kernel/kernel_entry.asm
+	$(NASM) $< -f elf -o $@
 
-# Floppy image
-floppy_image: $(BUILD_DIR)/main_floppy.img
+# Compile main.c
+build/kernel.o: src/kernel/main.c
+	$(CC) -ffreestanding -m32 -g -c $< -o $@
 
-$(BUILD_DIR)/main_floppy.img: bootloader kernel
-	dd if=/dev/zero of=$(BUILD_DIR)/main_floppy.img bs=512 count=2880
-	mkfs.fat -F 12 -n "NBOS" $(BUILD_DIR)/main_floppy.img
-	dd if=$(BUILD_DIR)/bootloader.bin of=$(BUILD_DIR)/main_floppy.img conv=notrunc
-	mcopy -i $(BUILD_DIR)/main_floppy.img $(BUILD_DIR)/kernel.bin "::kernel.bin"
-	cp $(BUILD_DIR)/main.bin $(BUILD_DIR)/main_floppy.img
-	truncate -s 1440k $(BUILD_DIR)/main_floppy.img
-	
+# Build zeroes.bin
+build/zeroes.bin: src/zeroes.asm
+	$(NASM) $< -f bin -o $@
 
-# Bootloader
-bootloader: $(BUILD_DIR)/bootloader.bin
+# Link kernel objects
+build/full_kernel.bin: build/kernel_entry.o build/kernel.o
+	$(LD) -o $@ -Ttext 0x1000 $^ --oformat binary
 
-$(BUILD_DIR)/bootloader.bin: always
-	$(ASM) $(SRC_DIR)/bootloader/boot.asm -f bin -o $(BUILD_DIR)/bootloader.bin
+# Concatenate binaries
+build/OS.bin: build/boot.bin build/full_kernel.bin build/zeroes.bin
+	cat $^ > $@
 
-# Kernel
-kernel: $(BUILD_DIR)/kernel.bin
-
-$(BUILD_DIR)/kernel.bin: always
-	$(ASM) $(SRC_DIR)/kernel/main.asm -f bin -o $(BUILD_DIR)/kernel.bin
-
-#always
-always:
-	mkdir -p $(BUILD_DIR)
-
-#clean
-clean:
-	rm -rf $(BUILD_DIR)/*
+.PHONY: all
