@@ -1,9 +1,14 @@
+// Standard Library
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "stdio.h"
 
 // Kernel Core
 #include "terminal.h"
+#include "idt.h"
+#include "gdt.h"
+#include "timer.h"
 
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
@@ -20,5 +25,11 @@ void kernel_main(void)
 	/* Initialize terminal interface */
 	terminal_initialize();
 
-	terminal_writestring("Hello World from make!");
+
+    // Initialise GDT and IDT
+    initGdt();
+    initIdt();
+    initTimer();
+
+    for (;;) {}
 }

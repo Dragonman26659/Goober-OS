@@ -5,17 +5,20 @@ size_t terminal_column;
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
 
-size_t strlen(const char* str) 
-{
-	size_t len = 0;
-	while (str[len])
-		len++;
-	return len;
-}
-
 void terminal_setcolor(uint8_t color) 
 {
 	terminal_color = color;
+}
+
+void terminal_clear() {
+    for (size_t y = 0; y < VGA_HEIGHT; y++) {
+		for (size_t x = 0; x < VGA_WIDTH; x++) {
+			const size_t index = y * VGA_WIDTH + x;
+			terminal_buffer[index] = vga_entry(' ', terminal_color);
+		}
+	}
+    terminal_row = 0;
+    terminal_column = 0;
 }
 
 void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) 
@@ -47,6 +50,15 @@ void terminal_writestring(const char* data)
 	terminal_column = 0;
 }
 
+void terminal_writestring_pos(const char* data, int screenx, int screeny) 
+{
+    const size_t length = strlen(data);
+
+    for (size_t i = 0; i < length; i++) {
+		terminal_putentryat(data[i], terminal_color, screenx - length / 2 + i, screeny);
+    }
+}
+
 void terminal_initialize(void) 
 {
 	terminal_row = 0;
@@ -59,4 +71,28 @@ void terminal_initialize(void)
 			terminal_buffer[index] = vga_entry(' ', terminal_color);
 		}
 	}
+}
+
+void terminal_crash(const char* data) {
+    terminal_setcolor(vga_entry_color(VGA_COLOR_RED, VGA_COLOR_RED));
+    terminal_clear();
+    
+    terminal_setcolor(vga_entry_color(VGA_COLOR_BLACK, VGA_COLOR_WHITE));
+
+    const size_t center_x = VGA_WIDTH / 2;
+    const size_t center_y = (VGA_HEIGHT / 2) - 5;
+
+    terminal_writestring_pos("[ GOOBER OS ]", center_x, center_y - 4);
+	terminal_writestring_pos("[ KERNEL CRASH ]", center_x, center_y - 2);
+	terminal_writestring_pos(data, center_x, center_y + 2);
+	terminal_writestring_pos("please shut down computer", center_x, center_y + 4);
+
+	// Prevent anything else happening
+	for (;;) {}
+}
+
+
+void terminal_nextline() {
+	terminal_row++;
+	terminal_column = 0;
 }

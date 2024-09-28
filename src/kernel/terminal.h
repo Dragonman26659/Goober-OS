@@ -1,12 +1,12 @@
 #ifndef TERMINAL_H
+#define TERMINAL_H
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 #include "vga.h"
-
-size_t strlen(const char* str);
+#include "util.h"
 
 void terminal_setcolor(uint8_t color);
 
@@ -21,5 +21,9 @@ void terminal_write(const char* data, size_t size);
 void terminal_writestring(const char* data);
 
 void terminal_initialize(void);
+
+void terminal_crash(const char* data);
+
+void terminal_nextline();
 
 #endif // TERMINAL_H
