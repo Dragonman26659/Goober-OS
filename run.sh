@@ -1,13 +1,9 @@
 cd /mnt/d/'Goober OS'
 export PATH=$PATH:/usr/local/i386elfgcc/bin
 
-#Compile
-i386-elf-as src/boot.s -o bin/boot.o
-
-i386-elf-gcc -ffreestanding -c src/kernel/kernel.c -o bin/kernel.o -std=gnu99  -O2 -Wall -Wextra
-
-#link
-i386-elf-ld -T src/linker.ld -o bin/myos.bin -O2 -nostdlib bin/boot.o bin/kernel.o
+# Compile kernel
+make
+make
 
 # Generate ISO
 if grub-file --is-x86-multiboot bin/myos.bin; then
@@ -23,3 +19,5 @@ grub-mkrescue -o isodir/myos.iso isodir
 
 
 qemu-system-i386 -cdrom isodir/myos.iso
+
+make clean
