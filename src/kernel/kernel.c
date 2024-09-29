@@ -2,13 +2,17 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "stdio.h"
+#include "std/stdio.h"
 
 // Kernel Core
 #include "terminal.h"
-#include "idt.h"
-#include "gdt.h"
+#include "idt/idt.h"
+#include "gdt/gdt.h"
 #include "timer.h"
+
+
+// basic devices
+#include "devices/keyboard.h"
 
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
@@ -25,11 +29,20 @@ void kernel_main(void)
 	/* Initialize terminal interface */
 	terminal_initialize();
 
-
-    // Initialise GDT and IDT
+    // Initialise Core
     initGdt();
     initIdt();
     initTimer();
+
+    printf("Initilised core kernel!");
+    printf("Loading basic peripheral devices");
+
+    // Setup command line
+
+    // Initialise keyboard (with reference to command line char handler)
+    InitKeyboard();
+
+    // Initalise scheduler
 
     for (;;) {}
 }

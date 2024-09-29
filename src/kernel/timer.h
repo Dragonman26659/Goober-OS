@@ -1,9 +1,8 @@
 #ifndef TIMER_H
 #define TIMER_H
-#include "util.h"
+#include "std/util.h"
 #include <stdint.h>
-#include "idt.h"
-#include "stdio.h"
+#include "idt/idt.h"
 
 
 void initTimer();

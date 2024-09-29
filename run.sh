@@ -3,7 +3,7 @@ export PATH=$PATH:/usr/local/i386elfgcc/bin
 
 # Compile kernel
 make
-make
+make bin/myos.bin
 
 # Generate ISO
 if grub-file --is-x86-multiboot bin/myos.bin; then

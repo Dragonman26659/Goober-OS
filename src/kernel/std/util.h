@@ -20,6 +20,7 @@ void* memset(void*, int, size_t);
 size_t strlen(const char*);
 
 void outPortB(uint16_t port, uint8_t value);
+char inPortB(uint16_t port);
 
 
 #endif // STRING_H

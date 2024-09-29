@@ -1,8 +1,8 @@
 #ifndef IDT_H
 #define IDT_H
 
-#include "util.h"
-#include "terminal.h"
+#include "../std/util.h"
+#include "../terminal.h"
 #include <stdint.h>
 #include <stddef.h>
 
