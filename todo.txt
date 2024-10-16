@@ -1,0 +1,20 @@
+MEMORY:
+- Paging
+- Virtual Memory
+- malloc()
+
+
+SCHEDULING:
+- Create a prossess structure
+- Inplement A queue
+- Inplement round robin scheduling
+- Allow programs to be loaded from binary files
+
+DISK:
+- Inplement FAT32 drivers
+- Set up a file system 
+
+USER:
+- Better typing interupt handline
+- Add a clock
+- Make commands based on files
