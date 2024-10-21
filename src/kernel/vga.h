@@ -1,9 +1,11 @@
 #ifndef VGA_H
 #define VGA_H
 
+#define VGA_W 80
+#define VGA_H 25
 
-static const size_t VGA_WIDTH = 80;
-static const size_t VGA_HEIGHT = 25;
+static const size_t VGA_WIDTH = VGA_W;
+static const size_t VGA_HEIGHT = VGA_H;
 
 
 /* Hardware text mode color constants. */

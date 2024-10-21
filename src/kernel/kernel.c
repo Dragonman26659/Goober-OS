@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "std/stdio.h"
+#include "multiboot.h"
 
 // Kernel Core
 #include "terminal.h"
@@ -10,22 +11,29 @@
 #include "gdt/gdt.h"
 #include "timer.h"
 
-
 // basic devices
 #include "devices/keyboard.h"
+
+// Core Programs
+#include "command/commandline.h"
+
+
 
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
 #error "You are not using a cross-compiler, you will most certainly run into trouble"
 #endif
 
+
+
 /* This tutorial will only work for the 32-bit ix86 targets. */
 #if !defined(__i386__)
 #error "this must be compiled with a ix86-elf compiler"
 #endif
 
-void kernel_main(void) 
-{
+
+// Kernel Main File
+void kmain(uint32_t magic, struct multiboot_info* bootInfo) {
 	/* Initialize terminal interface */
 	terminal_initialize();
 
@@ -34,15 +42,17 @@ void kernel_main(void)
     initIdt();
     initTimer();
 
-    printf("Initilised core kernel!");
-    printf("Loading basic peripheral devices");
+    // Initialise Basic Modules
+    CommandInit();
 
-    // Setup command line
+    // Initialise base drivers
+    InitKeyboard(CommandType);
 
-    // Initialise keyboard (with reference to command line char handler)
-    InitKeyboard();
+    // Setup scheduler
+    int pwr = 1;
 
-    // Initalise scheduler
-
-    for (;;) {}
+    // Main Loop of OS
+    while (pwr > 0) {
+        UpdateTerminal();
+    }
 }

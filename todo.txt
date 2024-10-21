@@ -3,7 +3,6 @@ MEMORY:
 - Virtual Memory
 - malloc()
 
-
 SCHEDULING:
 - Create a prossess structure
 - Inplement A queue
@@ -15,6 +14,5 @@ DISK:
 - Set up a file system 
 
 USER:
-- Better typing interupt handline
 - Add a clock
 - Make commands based on files

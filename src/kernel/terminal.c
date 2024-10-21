@@ -40,29 +40,34 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 
 // Scrolls the terminal
 void terminal_scroll() {
-    for (int i = 0; i < VGA_HEIGHT - 1; i++) {
+    for (int i = 0; i < VGA_HEIGHT - 2; i++) {
         memcpy(terminal_buffer + i * VGA_WIDTH,
                terminal_buffer + (i + 1) * VGA_WIDTH,
                VGA_WIDTH * sizeof(*terminal_buffer));
     }
     for (size_t x = 0; x < VGA_WIDTH; x++) {
-        terminal_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = vga_entry(' ', terminal_color);
+        terminal_buffer[(VGA_HEIGHT - 2) * VGA_WIDTH + x] = vga_entry(' ', terminal_color);
     }
 }
 
+// Clears a line of the terminal
+void terminal_clearline(size_t line) {
+	for (size_t x = 0; x < VGA_WIDTH; x++) {
+		const size_t index = line * VGA_WIDTH + x;
+		terminal_buffer[index] = vga_entry(' ', terminal_color);
+	}
+}
 
 // Sets the next line for the print statement
 void terminal_nextline() {
 	terminal_row++;
-	if (terminal_row > VGA_HEIGHT - 1) {
+	if (terminal_row > VGA_HEIGHT - 2) {
 		terminal_scroll();
 		terminal_row -= 1;
 	}
 
 	terminal_column = 0;
 }
-
-
 
 // Places a charater in the terminal
 void terminal_putchar(char c) 
@@ -86,8 +91,7 @@ void terminal_writestring(const char* data)
 	terminal_write(data, strlen(data));
 }
 
-
-// Writes a string at a specific position
+// Writes a string at a specific position (Centered)
 void terminal_writestring_pos(const char* data, int screenx, int screeny) 
 {
     const size_t length = strlen(data);
@@ -97,7 +101,23 @@ void terminal_writestring_pos(const char* data, int screenx, int screeny)
     }
 }
 
+// Writes a string on a specific line
+void terminal_writestring_Y(const char* data, int screeny) {
+	const size_t length = strlen(data);
 
+    for (size_t i = 0; i < length; i++) {
+		terminal_putentryat(data[i], terminal_color, i, screeny);
+	}
+}
+
+// Writes a string at a specific position (At start)
+void terminal_writestring_XY(const char* data, int screenx, int screeny) {
+	const size_t length = strlen(data);
+
+    for (size_t i = 0; i < length; i++) {
+		terminal_putentryat(data[i], terminal_color, screenx + i, screeny);
+	}
+}
 
 
 // General commands
@@ -113,7 +133,6 @@ void terminal_clear() {
     terminal_row = 0;
     terminal_column = 0;
 }
-
 
 // Displays a crash message and halts the OS
 void terminal_crash(const char* data) {
@@ -132,4 +151,20 @@ void terminal_crash(const char* data) {
 
 	// Prevent anything else happening
 	for (;;) {}
+}
+
+void terminal_disable_cursor()
+{
+	outPortB(0x3D4, 0x0A);
+	outPortB(0x3D5, 0x20);
+}
+
+void terminal_setcursorpos(int x, int y)
+{
+	uint16_t pos = y * VGA_WIDTH + x;
+
+	outPortB(0x3D4, 0x0F);
+	outPortB(0x3D5, (uint8_t) (pos & 0xFF));
+	outPortB(0x3D4, 0x0E);
+	outPortB(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
 }

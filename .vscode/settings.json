@@ -13,7 +13,12 @@
         "xutility": "c",
         "stdbool.h": "c",
         "timer.h": "c",
-        "util.h": "c"
+        "util.h": "c",
+        "commandline.h": "c",
+        "queue": "c",
+        "stack": "c",
+        "vga.h": "c",
+        "terminal.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

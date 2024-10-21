@@ -8,7 +8,6 @@
 #include <stdbool.h>
 
 
-
 void InitKeyboard();
 void keyboardHandler(struct InterruptRegisters *regs);
 

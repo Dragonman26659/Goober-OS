@@ -1,5 +1,9 @@
 #include "keyboard.h"
 
+typedef void (*TypeHandler)(char);
+
+static TypeHandler currentHandler = NULL;
+
 bool capsOn;
 bool capsLock;
 
@@ -62,8 +66,11 @@ UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN
 };
 
 
-void InitKeyboard() {
+void InitKeyboard(TypeHandler handler) {
+    currentHandler = handler;
     irq_install_handler(1, &keyboardHandler);
+
+    printf("Keyboard initialised!");
 }
 
 
@@ -71,50 +78,40 @@ void keyboardHandler(struct InterruptRegisters *regs) {
     char scanCode = inPortB(0x60) & 0x7F; // What key is pressed
     char press = inPortB(0x60) & 0x80; // Pressed down or released
     
-
-    switch(scanCode){
-        case 1:
-        case 29:
-        case 56:
-        case 59:
-        case 60:
-        case 61:
-        case 62:
-        case 63:
-        case 64:
-        case 65:
-        case 66:
-        case 67:
-        case 68:
-        case 87:
-        case 88:
-            break;
-
-        case 42:
-            if (press == 0){
-                capsOn = true;
-            }else{
-                capsOn = false;
-            }
-            break;
-
-        case 58:
-            if (!capsLock && press == 0){
-                capsLock = true;
-            }else if (capsLock && press == 0){
-                capsLock = false;
-            }
-            break;
-
-
-        default:
-            if (press == 0){
-                if (capsOn || capsLock){
-                    printf("%c", uppercase[scanCode]);
-                }else{
-                    printf("%c", lowercase[scanCode]);
+    if (currentHandler != NULL) {
+        switch(scanCode){
+            case 1:
+            case 29:
+            case 56:
+            case 59:
+            case 60:
+            case 61:
+            case 62:
+            case 63:
+            case 64:
+            case 65:
+            case 66:
+            case 67:
+            case 68:
+            case 87:
+            case 88:
+                break;
+            case 42:
+                capsOn = !capsOn;
+                break;
+            case 58:
+                if (press == 0)
+                    capsLock = !capsLock;
+                break;
+            default:
+                if (press == 0) {
+                    uint32_t code = capsOn || capsLock ? uppercase[scanCode] : lowercase[scanCode];
+                    if (code != UNKNOWN) {
+                        unsigned char c = (int)code;
+                        currentHandler(c);
+                    }
                 }
-            }
-            break;
+                break;
+        }
     }
 }
