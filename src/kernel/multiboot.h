@@ -1,3 +1,6 @@
+#ifndef MULTIBOOT_H
+#define MULTIBOOT_H
+
 struct multiboot_aout_symbol_table
 {
   uint32_t tabsize;
@@ -62,3 +65,6 @@ struct multiboot_mmap_entry
 #define MULTIBOOT_MEMORY_BADRAM                 5
   uint32_t type;
 } __attribute__((packed));
+
+
+#endif // MULTIBOOT_H

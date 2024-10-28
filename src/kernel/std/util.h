@@ -1,9 +1,12 @@
-#ifndef STRING_H
-#define STRING_H
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+
+#define CEIL_DIV(a, b) (((a + b) - 1)/b)
+#define ROUND_UP(x, y) (((x) + (y) - 1) / (y))
 
 struct InterruptRegisters{
     uint32_t cr2;
@@ -29,4 +32,4 @@ void outPortB(uint16_t port, uint8_t value);
 char inPortB(uint16_t port);
 
 
-#endif // STRING_H
+#endif // UTIL_H

@@ -69,8 +69,6 @@ UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN,UNKNOWN
 void InitKeyboard(TypeHandler handler) {
     currentHandler = handler;
     irq_install_handler(1, &keyboardHandler);
-
-    printf("Keyboard initialised!");
 }
 
 

@@ -1,0 +1,7 @@
+#romimage: file=/home/samuel/Downloads/bochs-2.8/bios/BIOS-bochs-latest
+#vgaromimage: file=/home/samuel/Downloads/bochs-2.8/bios/VGABIOS-lgpl-latest
+#romimage: file=BIOS-bochs-latest, address=0xfffe0000
+#vgaromimage: file=VGABIOS-lgpl-latest
+ata0-slave: type=cdrom, path=isodir/myos.iso, status=inserted
+boot:cdrom
+display_library: x, options = "gui_debug"

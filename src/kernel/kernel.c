@@ -10,6 +10,8 @@
 #include "idt/idt.h"
 #include "gdt/gdt.h"
 #include "timer.h"
+#include "memory/memory.h"
+#include "memory/kmalloc.h"
 
 // basic devices
 #include "devices/keyboard.h"
@@ -37,10 +39,16 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo) {
 	/* Initialize terminal interface */
 	terminal_initialize();
 
+    uint32_t mod1 = *(uint32_t*)(bootInfo->mods_addr + 4);
+    uint32_t physicalAllocStart = (mod1 + 0xFFF) & ~0xFFF;
+
+
     // Initialise Core
     initGdt();
     initIdt();
     initTimer();
+    initMemory(bootInfo->mem_upper * 1024, physicalAllocStart);
+    kmalloc_init(0x1000);
 
     // Initialise Basic Modules
     CommandInit();
@@ -52,7 +60,7 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo) {
     int pwr = 1;
 
     // Main Loop of OS
-    while (pwr > 0) {
+    for (;;) {
         UpdateTerminal();
     }
 }
