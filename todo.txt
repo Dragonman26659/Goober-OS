@@ -1,7 +1,10 @@
 MEMORY:
-- Paging
-- Virtual Memory
 - malloc()
+
+MODULES:
+- Setup kernel symbol table
+
+
 
 SCHEDULING:
 - Create a prossess structure
