@@ -9,7 +9,7 @@ OBJ = $(shell ls bin/*.o)
 
 all: src bin/myos.bin
 
-src: 
+src:
 	make -C src all ; cp src/kernel/*.o bin; cp src/kernel/*/*.o bin; make -C src clean
 
 bin/myos.bin: bin/*.o
