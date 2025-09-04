@@ -11,7 +11,7 @@
 #include "gdt/gdt.h"
 #include "timer.h"
 #include "memory/memory.h"
-#include "memory/kmalloc.h"
+#include "scheduler/scheduler.h"
 
 // basic devices
 #include "devices/keyboard.h"
@@ -34,6 +34,7 @@
 #endif
 
 
+
 // Kernel Main File
 void kmain(uint32_t magic, struct multiboot_info* bootInfo) {
 	/* Initialize terminal interface */
@@ -47,8 +48,6 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo) {
     initGdt();
     initIdt();
     initTimer();
-    initMemory(bootInfo->mem_upper * 1024, physicalAllocStart);
-    kmalloc_init(0x1000);
 
     // Initialise Basic Modules
     CommandInit();
@@ -56,11 +55,9 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo) {
     // Initialise base drivers
     InitKeyboard(CommandType);
 
-    // Setup scheduler
-    int pwr = 1;
-
     // Main Loop of OS
     for (;;) {
+        schedule();
         UpdateTerminal();
     }
 }

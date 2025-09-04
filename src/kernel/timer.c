@@ -1,13 +1,28 @@
 #include "timer.h"
 
 
-uint64_t ticks;
 const uint32_t freq = 100;
+int callbackID = 0;
 
+
+timerCallback_t timerCallbacks[16] = {
+    0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0
+};
 
 // Update ticks on ossilation
 void onIrq0(struct InterruptRegisters *regs) {
     ticks++;
+
+    for (int x; x < 17; x++) {
+        timerCallback_t tc = timerCallbacks[x];
+        tc.cTicks++;
+
+        if (tc.cTicks == tc.ticks) {
+            tc.callback();
+            tc.cTicks = 0;
+        }
+    }
 }
 
 
@@ -23,4 +38,4 @@ void initTimer() {
     outPortB(0x43, 0x36);
     outPortB(0x40, (uint8_t)(divisor & 0xFF));
     outPortB(0x40, (uint8_t)((divisor >> 8) & 0xFF));
-} 
+}

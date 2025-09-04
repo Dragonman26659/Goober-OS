@@ -3,6 +3,7 @@
 char commandBuffer[VGA_W - 2];
 int commandIndex = 0;
 bool exeCMD = false;
+bool charTyped = false;
 
 void Display_shell_prompt() {
     terminal_setcursorpos(commandIndex + 2, VGA_HEIGHT - 1);
@@ -11,6 +12,8 @@ void Display_shell_prompt() {
     terminal_writestring_XY("$>", 0 ,VGA_HEIGHT - 1);
     terminal_writestring_XY(commandBuffer, 2 ,VGA_HEIGHT - 1);
     terminal_setcolor(vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK));
+
+    charTyped = false;
 }
 
 void CommandInit() {
@@ -44,6 +47,8 @@ void CommandType(char c) {
             }
             break;
     }
+
+    charTyped = true;
 }
 
 void UpdateTerminal() {
@@ -52,21 +57,16 @@ void UpdateTerminal() {
         ResetCommandBuffer();
         exeCMD = false;
     }
-
-    // Display shell
-    Display_shell_prompt();
+    if (charTyped) {
+        // Display shell
+        Display_shell_prompt();
+    }
 }
 
 void executeCommand(const char* data) {
     char* command[30];
     char* operand[255];
 
-    
-    if (strcmp(command, "crash") == 0 && operand != NULL) {
-        terminal_crash(operand);
-    } else if (strcmp(command, "echo") == 0 && operand != NULL) {
-        printf("%s", operand);
-    }else if (strcmp(command, "clr") == 0) {
-        ConsoleClear();
-    }
+
+    printf("Command not known!");
 }
