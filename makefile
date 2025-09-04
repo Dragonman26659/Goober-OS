@@ -1,5 +1,4 @@
 CC = i386-elf-gcc
-AS = i386-elf-as
 LD = i386-elf-ld
 
 CFLAGS = -ffreestanding -O2 -Wall -Wextra -std=gnu99

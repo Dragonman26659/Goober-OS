@@ -1,18 +1,24 @@
 MEMORY:
 - Paging
-- Virtual Memory
 - malloc()
 
 SCHEDULING:
 - Create a prossess structure
 - Inplement A queue
+- Inplement Switching
+- Inplement System Calls from user space
 - Inplement round robin scheduling
 - Allow programs to be loaded from binary files
 
+GRAPHICS:
+- enable graphics mode
+- setup a desktop
+- make a terminal window
+- make any prossess to be able to create a window and edit framebuffer
+
+
 DISK:
 - Inplement FAT32 drivers
-- Set up a file system 
-
-USER:
-- Add a clock
-- Make commands based on files
+- Set up a file system
+- create file manager program
+- allow files to be launched as programs
