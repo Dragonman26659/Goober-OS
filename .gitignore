@@ -4,7 +4,7 @@
 *.iso
 *.bin
 gcc-12.2.0/*
-isodir
+isodir/*
 *.tar.gz
 gcc-12.2.0.tar.gz.1
 gcc-12.2.0.tar.gz
