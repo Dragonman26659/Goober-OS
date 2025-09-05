@@ -1,4 +1,4 @@
-#include "terminal.h"
+#include "Include/Debug/terminal.h"
 
 size_t terminal_row;
 size_t terminal_column;

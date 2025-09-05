@@ -3,9 +3,8 @@ AS = nasm -f elf32
 
 CFLAGS = -ffreestanding -O2 -Wall -Wextra -std=gnu99
 
-SRC=$(wildcard *.c) $(wildcard */*.c)
-SRCPP=$(wildcard *.cpp) $(wildcard */*.cpp)
-ASM=$(wildcard *.s) $(wildcard */*.s)
+SRC=$(wildcard *.c) $(wildcard */*.c) $(wildcard */*/*.c) $(wildcard */*/*/*.c)
+ASM=$(wildcard *.s) $(wildcard */*.s) $(wildcard */*/*.s) $(wildcard */*/*/*.s)
 OBJA=$(patsubst %.s, %.o, $(ASM))
 OBJ=$(patsubst %.c, %.o, $(SRC))
 OBJPP=$(patsubst %.cpp, %.o, $(SRCPP))

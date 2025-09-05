@@ -1,4 +1,4 @@
-#include "idt.h"
+#include "include/Core/idt.h"
 
 struct idt_entry_struct idt_entries[256];
 struct idt_ptr_struct idt_ptr;

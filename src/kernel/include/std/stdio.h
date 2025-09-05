@@ -1,7 +1,7 @@
 #ifndef STDIO_H
 #define STDIO_H
 #include "util.h"
-#include "../terminal.h"
+#include "Include/debug/terminal.h"
 #include <limits.h>
 #include <stdbool.h>
 #include <stdarg.h>

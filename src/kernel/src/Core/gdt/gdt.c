@@ -1,5 +1,5 @@
-#include "gdt.h"
-#include "../std/util.h"
+#include "include/Core/gdt.h"
+#include "include/std/util.h"
 
 
 extern void gdt_flush(uint32_t);

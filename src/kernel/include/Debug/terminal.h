@@ -5,8 +5,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "vga.h"
-#include "std/util.h"
+#include "include/Debug/vga.h"
+#include "include/std/util.h"
 
 void terminal_setcolor(uint8_t color);
 

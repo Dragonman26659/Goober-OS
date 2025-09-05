@@ -2,22 +2,30 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "std/stdio.h"
-#include "multiboot.h"
+#include "include/std/stdio.h"
+#include "include/Core/multiboot.h"
 
 // Kernel Core
-#include "terminal.h"
-#include "idt/idt.h"
-#include "gdt/gdt.h"
-#include "timer.h"
-#include "memory/memory.h"
-#include "scheduler/scheduler.h"
+#include "include/Debug/terminal.h"
+#include "include/Core/idt.h"
+#include "include/Core/gdt.h"
+#include "include/Scheduler/timer.h"
+#include "include/memory/memory.h"
 
 // basic devices
-#include "devices/keyboard.h"
+#include "include/Debug/keyboard.h"
 
 // Core Programs
-#include "command/commandline.h"
+#include "include/Debug/commandline.h"
+
+
+
+// Toggle to 1 to enable kernel level debug console
+#define DEBUG 1
+
+
+
+
 
 
 
@@ -28,36 +36,53 @@
 
 
 
-/* This tutorial will only work for the 32-bit ix86 targets. */
+/* This OS will only work for the 32-bit ix86 targets. */
 #if !defined(__i386__)
 #error "this must be compiled with a ix86-elf compiler"
 #endif
 
 
 
-// Kernel Main File
-void kmain(uint32_t magic, struct multiboot_info* bootInfo) {
-	/* Initialize terminal interface */
-	terminal_initialize();
-
-    uint32_t mod1 = *(uint32_t*)(bootInfo->mods_addr + 4);
-    uint32_t physicalAllocStart = (mod1 + 0xFFF) & ~0xFFF;
-
-
+void InitCore() {
     // Initialise Core
     initGdt();
     initIdt();
     initTimer();
+}
 
-    // Initialise Basic Modules
+void InitDebug() {
+    /* Initialize terminal interface */
+	terminal_initialize();
+
+
+    // Initialise Debug Commands
     CommandInit();
 
-    // Initialise base drivers
+    // Initialise basic keboard support
     InitKeyboard(CommandType);
 
-    // Main Loop of OS
+
+    // TODO: add debug console to scheduler
+}
+
+
+// Kernel Main File
+void kmain(uint32_t magic, struct multiboot_info* bootInfo) {
+    uint32_t mod1 = *(uint32_t*)(bootInfo->mods_addr + 4);
+    uint32_t physicalAllocStart = (mod1 + 0xFFF) & ~0xFFF;
+
+
+    // Initalise core systems to be able to use anything
+    InitCore();
+
+    #ifdef DEBUG = 1
+        InitDebug();
+    #endif
+
+
+    // Scheduler boot
+    // TODO: make scheduler
     for (;;) {
-        schedule();
         UpdateTerminal();
     }
 }

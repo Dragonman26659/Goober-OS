@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.cfg": "ignore",
         "print.h": "c",
         "print": "c",
         "limits.h": "c",
@@ -20,7 +21,12 @@
         "vga.h": "c",
         "terminal.h": "c",
         "idt.h": "c",
-        "scheduler.h": "c"
+        "scheduler.h": "c",
+        "gdt.h": "c",
+        "memory.h": "c",
+        "keyboard.h": "c",
+        "multiboot.h": "c",
+        "stdio.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

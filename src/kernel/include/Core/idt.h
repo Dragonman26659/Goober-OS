@@ -2,7 +2,6 @@
 #define IDT_H
 
 #include "../std/util.h"
-#include "../terminal.h"
 #include <stdint.h>
 #include <stddef.h>
 

@@ -1,9 +1,9 @@
 #ifndef TIMER_H
 #define TIMER_H
-#include "std/util.h"
-#include "std/stdio.h"
+#include "Include/std/util.h"
+#include "Include/std/stdio.h"
 #include <stdint.h>
-#include "idt/idt.h"
+#include "include/Core/idt.h"
 
 uint32_t ticks;
 

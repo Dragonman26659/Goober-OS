@@ -1,9 +1,9 @@
 #ifndef COMMANDLINE_H
 #define COMMANDLINE_H
-#include "../terminal.h"
-#include "../devices/keyboard.h"
+#include "terminal.h"
+#include "keyboard.h"
+#include "vga.h"
 #include "../std/util.h"
-#include "../vga.h"
 
 #define COMMAND_PREFIX "$ "
 

@@ -1,4 +1,4 @@
-#include "commandline.h"
+#include "Include/Debug/commandline.h"
 
 char commandBuffer[VGA_W - 2];
 int commandIndex = 0;
